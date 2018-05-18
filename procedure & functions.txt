@@ -1,0 +1,99 @@
+Stored Procedures
+1.Functions : Zero or more arguements and it will return a value,
+	      A function can be called independently to a 'select' statement in
+	      'where' clause in 'order by' clause or in 'having' clause.
+Rules of a function:
+a.Function should have a return statement.
+b.Function can have only 'in mode' arguement.
+c.The arguements should not be assigned.
+
+'create' or 'replace' - Define a function or to use an exising function 
+
+Note:
+1.Any stored procedure will be compiled and created even though in errors.
+
+Create a function to add two numbers:
+
+create or replace function add1(a1 in number,a2 number) return number 
+is c number(5);
+begin
+c := a1+a2; 
+return c;
+end add1;
+
+//declarations should not be used in functions
+
+select add1(10,25) from dual;
+
+select id,M1,M2,add1(M1,M2) from marks;
+select id,M1,M2,M3,M4,M5,add1(add1(add1(M1,M2),add1(M3,M4)),M5) Total from marks;
+
+Independent Execution in Command Prompt:
+variable x1 number;
+execute :x1 :=add1(5,6);
+print x1;
+
+create or replace function 
+sresult(a1 in number,a2 number,a3 in marks.M3%type,a4 in number,a5 in number)
+return varchar is 
+a6 number(6);
+r1 varchar(20) := 'distinction';
+begin
+a6 := (a1+a2+a3+a4+a5)/250*100;
+if a1 < 18 or a2 < 18 or a3 < 18 or a4 < 18 or a5 < 18 then
+r1 := 'Fail';
+elsif a6 < 50 then
+r1 := 'Pass';
+elsif a6 < 60 then
+r1 := 'second class';
+elsif a6 < 70 then
+r1 := 'First class';
+end if;
+return r1;
+end sresult; 
+
+
+select id,trim(sresult(M1,M2,m3,m4,m5)) result from marks order by sresult(m1,m2,m3,m4,m5);
+select id,trim(sresult(M1,M2,m3,m4,m5)) result from marks where sresult(m1,m2,m3,m4,m5)='First class';
+
+Create a function to compute income tax taking annual salary 
+
+
+
+
+
+create or replace procedure add2( a1 in number,a2 in number,a3 out number)
+is
+begin
+a3 :=a1+a2 ;
+end add2;
+
+
+
+
+create a prodecure to insert values into the student table;
+
+create or replace procedure insstudent(id1 student.id%type,
+f_name1 student.f_name%type,
+l_name1 student.l_name%type default null,
+dob1 student.dob%type default null,
+dno1 student.dno%type default null,
+street1 student.street%type default null,
+street21 student.street2%type default null,
+gender1 student.gender%type default 'M')
+is
+begin
+insert into student values(id1,f_name1,l_name1,dob1,dno1,
+street1,street21,gender1);
+commit;
+end insstudent;
+
+
+
+
+
+
+
+
+
+ 

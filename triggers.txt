@@ -1,0 +1,93 @@
+Triggers 
+
+1.Application eg-handling the menu item request
+2.Database eg DML (Insert,Update,Delete) 
+
+Types of database trigger
+
+Statement level trigger -executes once
+Row level trigger - executes for each row 
+
+Attribute used in row level trigger
+:NEW :OLD - this attribute will work along with for each row
+
+Events
+afterlogin and beforelogoff
+
+
+1.write a trigger to update the details of the user who is 
+inserting the data in student table
+
+create table student_up(
+id number(5),
+uname varchar(25),
+dt date);
+
+create or replace trigger stuup
+after insert on student for each row 
+begin
+insert into student_up values(:NEW.id,user,sysdate);
+end stuup;
+
+2.write a trigger to have backup while update/delete
+
+create table back_stud as select * from student where id is null ;
+
+alter table back_stud add ( dt date,uname varchar(25),status varchar(2));
+
+create or replace trigger delstudent
+after delete or update on student for each row
+begin
+case when deleting then
+insert into back_Stud values (:OLD.id,:OLD.f_name,:OLD.l_name,:OLD.dob,
+:OLD.dno,:OLD.street,:OLD.street2,:OLD.gender,sysdate,user,'D'); 
+when updating then
+insert into back_Stud values (:OLD.id,:OLD.f_name,:OLD.l_name,:OLD.dob,
+:OLD.dno,:OLD.street,:OLD.street2,:OLD.gender,sysdate,user,'U'); end case;
+end delstudent;
+
+
+3.write a trigger to generate id and emailid
+employee name,id,city,branch name and emailid .
+create a trigger on employee table to generate employee id and emailid
+id is continous number it start from 4001
+email id is made up of first four character of name and
+three character from city and branch 
+and cognizant.com  eg:(user.bgrgvs@cognizant.com)
+
+create table employee(
+emp_id number(5),
+emp_name varchar(25),
+emp_city varchar(25),
+emp_branch varchar(25),
+emailid varchar(50));
+
+create table empbackup(
+row_id number(5)
+);
+insert intO empbackup values (4001);
+
+create or replace trigger emp 
+before insert on employee for each row
+declare
+a1 number(5);
+a2 varchar(50);
+begin
+select max(row_id) into a1 from empbackup;
+a1:=a1+1;
+update empbackup set row_id=a1;
+a2:=substr(:NEW.emp_name,1,4)||'.'||substr(:NEW.emp_city,1,4)||substr(:NEW.emp_branch,1,4)||'@cognizant.com';
+
+:NEW.emp_id:=a1;
+:NEW.emailid:=a2;
+
+end emp;
+
+
+
+
+
+
+
+
+

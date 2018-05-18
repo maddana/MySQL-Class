@@ -1,0 +1,63 @@
+declare
+type a1 is table of number(5) index by binary_integer;
+b1 a1;
+begin
+b1(1) :=100;
+b1(2) :=30;
+b1(3) :=50;
+for i in b1.first .. b1.last loop
+dbms_output.put_line(b1(i));
+end loop;
+dbms_output.put_line(b1.last||'   '||b1(b1.last));
+dbms_output.put_line(b1.first||'   '||b1(b1.first));
+end;
+
+--> type declarations cant be used
+--> binary_integer is an attribute which is defined for the index of the array
+
+declare
+type a1 is table of number(10) index by varchar(20);
+b1 a1;
+begin
+b1('bangalore') :=100000;
+b1('chennai') :=150000;
+b1('ahmedabad') :=200000;
+dbms_output.put_line(b1.first||'   '||b1(b1.first));
+dbms_output.put_line(b1.last||'   '||b1(b1.last));
+end;
+
+--> index is sorted first (also for character array)
+
+declare
+type a1 is table of number(10) index by varchar(20);
+b1 a1;
+c1 varchar(20);
+begin
+b1('bangalore') :=100000;
+b1('chennai') :=150000;
+b1('ahmedabad') :=200000;
+c1 := b1.first;
+loop 
+dbms_output.put_line(c1||'   '||b1(c1));
+exit when c1 = b1.last;
+c1 := b1.next(c1);
+end loop;
+end;
+
+creat a pl/sql array to store all the data in the student table
+
+declare
+type a1 is table of student%rowtype index by binary_integer;
+b1 a1;
+begin
+select * bulk collect into b1 from student;
+for i in b1.first .. b1.last loop
+dbms_output.put_line(b1(i).id||'  '||b1(i).f_name||'  '||b1(i).dob);
+end loop;
+end;
+
+
+
+
+
+

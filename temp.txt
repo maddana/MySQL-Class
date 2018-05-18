@@ -1,0 +1,21 @@
+declare
+cursor c1 is select st.sname, count(*) population
+from connect1 c1 inner join city c on (c.cid=c1.cid)
+inner join district d on (d.did=c.did)
+inner join state st on (st.sid=d.sid) group by st.sname;
+begin
+for a1 in c1
+loop
+	if a1.population < 2
+	then
+		dbms_output.put_line(a1.sname||'  '||a1.population||'  Average');
+	else if a1.population < 4
+	then
+		dbms_output.put_line(a1.sname||'  '||a1.population||'  Good');
+	else
+		dbms_output.put_line(a1.sname||'  '||a1.population||'  Excellent');
+	end if;
+	end if;
+end loop;
+end;
+/
